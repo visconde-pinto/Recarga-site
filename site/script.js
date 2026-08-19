@@ -46,27 +46,6 @@ const supabaseClient = window.supabase?.createClient(
             }, { once: true });
         }
 
-// ===== CONTROLES DA TELA PIX =====
-
-        function copiarPix() {
-            const texto = document.getElementById('qrCodeTexto');
-            if (!texto || texto.textContent.trim() === 'Aguardando código Pix...') return;
-            const valor = texto.textContent;
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(valor);
-            } else {
-                const input = document.createElement('textarea');
-                input.value = valor;
-                input.setAttribute('readonly', '');
-                input.style.position = 'fixed';
-                input.style.opacity = '0';
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                input.remove();
-            }
-        }
-
         function svgIcon(type, color) {
             const paths = {
                 check: '<path d="m5 12 4 4L19 6"/>',
@@ -96,21 +75,11 @@ const supabaseClient = window.supabase?.createClient(
             const popupProcessing = document.getElementById('popupProcessing');
             const popupSuccess = document.getElementById('popupSuccess');
             const popupPix = document.getElementById('popupPix');
-            const qrCodeImagem = document.getElementById('qrCodeImagem');
-            const qrCodePlaceholder = document.getElementById('qrCodePlaceholder');
-            const qrCodeTexto = document.getElementById('qrCodeTexto');
-            const qrCodeArea = document.getElementById('qrCodeArea');
+            const paymentLinkText = document.getElementById('paymentLinkText');
             const pixTitle = document.getElementById('pixTitle');
             const pixCodeLabel = document.getElementById('pixCodeLabel');
-            const btnCopyPix = document.getElementById('btnCopyPix');
             const btnOpenPayment = document.getElementById('btnOpenPayment');
             let paymentLinkAtual = '';
-
-            qrCodeImagem.addEventListener('load', function() {
-                if (!this.getAttribute('src')) return;
-                this.style.display = 'block';
-                if (qrCodePlaceholder) qrCodePlaceholder.hidden = true;
-            });
 
 // ===== Elementos do popup de ordem =====
             const orderUserPopup = document.getElementById('orderUserPopup');
@@ -185,10 +154,6 @@ const supabaseClient = window.supabase?.createClient(
                 if (!order) return null;
                 const link = order.checkoutUrl || '';
                 return {
-                    tipo: link ? 'link' : 'qr',
-                    chave: '',
-                    qrCode: '',
-                    copiaCola: '',
                     link
                 };
             }
@@ -208,43 +173,12 @@ const supabaseClient = window.supabase?.createClient(
                 }
             }
 
-            function prepararTelaPix(paymentApi) {
-                const pagamentoPorLink = paymentApi?.tipo === 'link';
-                const chaveEmTexto = paymentApi?.tipo === 'chave';
-                const chave = paymentApi?.chave || '';
+            function prepararTelaPagamento(paymentApi) {
                 const link = paymentApi?.link || '';
-                paymentLinkAtual = pagamentoPorLink ? link : '';
-                qrCodeArea.hidden = chaveEmTexto || pagamentoPorLink;
-                btnCopyPix.hidden = pagamentoPorLink;
-                btnOpenPayment.hidden = !pagamentoPorLink;
-                animarConteudo(pixTitle, pagamentoPorLink ? 'Pague com link' : chaveEmTexto ? 'Pague com chave Pix' : 'Pague com Pix');
-                animarConteudo(pixCodeLabel, pagamentoPorLink ? 'Link de pagamento' : chaveEmTexto ? 'Chave Pix' : 'Código Pix copia e cola');
-                animarConteudo(document.getElementById('btnClosePix'), pagamentoPorLink ? 'Fechar pagamento' : 'Fechar');
-
-                if (pagamentoPorLink) {
-                    animarConteudo(qrCodeTexto, link || 'Aguardando link de pagamento...');
-                    return;
-                }
-
-                if (chaveEmTexto) {
-                    animarConteudo(qrCodeTexto, chave);
-                    animarConteudo(btnCopyPix, svgIcon('copy', '#ffffff') + ' Copiar chave Pix', { html: true, duration: 145 });
-                    return;
-                }
-
-                const qrCode = paymentApi ? paymentApi.qrCode : '';
-                const copiaCola = paymentApi ? paymentApi.copiaCola : '';
-                if (qrCode) {
-                    qrCodeImagem.setAttribute('src', qrCode);
-                    qrCodeImagem.style.display = 'block';
-                    if (qrCodePlaceholder) qrCodePlaceholder.hidden = true;
-                } else {
-                    qrCodeImagem.removeAttribute('src');
-                    qrCodeImagem.style.display = 'none';
-                    if (qrCodePlaceholder) qrCodePlaceholder.hidden = false;
-                }
-                animarConteudo(qrCodeTexto, copiaCola || 'Aguardando código Pix...');
-                animarConteudo(btnCopyPix, svgIcon('copy', '#ffffff') + ' Copiar código Pix', { html: true, duration: 145 });
+                paymentLinkAtual = link;
+                animarConteudo(pixTitle, 'Pague com link');
+                animarConteudo(pixCodeLabel, 'Link de pagamento');
+                animarConteudo(paymentLinkText, link);
             }
 
 // ===== VERIFICAR USUÁRIO =====
@@ -373,9 +307,8 @@ const supabaseClient = window.supabase?.createClient(
 
 // ===== INTEGRAÇÃO DE PAGAMENTO =====
 
-            btnCopyPix.addEventListener('click', copiarPix);
             btnOpenPayment.addEventListener('click', function() {
-                if (paymentLinkAtual) window.open(paymentLinkAtual, '_blank', 'noopener,noreferrer');
+                if (paymentLinkAtual) window.location.href = paymentLinkAtual;
             });
             document.getElementById('btnClosePix').addEventListener('click', function() {
                 hidePopup(popupPix);
@@ -404,6 +337,7 @@ const supabaseClient = window.supabase?.createClient(
                 try {
                     const pedido = await aguardarComTimeout(criarPedidoApi(criarPayloadPedido()), 5000);
                     pagamentoApi = normalizarPagamentoApi(pedido);
+                    if (!pagamentoApi?.link) throw new Error('LINK_INDISPONIVEL');
                 } catch (error) {
                     hidePopup(popupProcessing);
                     btn.disabled = false;
@@ -415,7 +349,7 @@ const supabaseClient = window.supabase?.createClient(
                 setTimeout(() => {
                     hidePopup(popupProcessing);
                     if (pixHabilitado) {
-                        prepararTelaPix(pagamentoApi);
+                        prepararTelaPagamento(pagamentoApi);
                         showPopup(popupPix);
                     } else {
                         showPopup(popupSuccess);
