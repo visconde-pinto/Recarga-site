@@ -1,0 +1,58 @@
+{
+  "start_url": "https://linkverificado.bio/afiliadoref3619/",
+  "scope_host": "linkverificado.bio",
+  "mode": "static-html-css-js-no-api",
+  "pages_downloaded": 1,
+  "assets_downloaded": 4,
+  "files": [
+    {
+      "url": "https://linkverificado.bio/afiliadoref3619/",
+      "local": "site/index.html",
+      "kind": "html",
+      "status": 200,
+      "content_type": "text/html"
+    },
+    {
+      "url": "https://linkverificado.bio/afiliadoref3619/css/output.css",
+      "local": "site/style.css",
+      "kind": "css",
+      "status": 200,
+      "content_type": "text/css",
+      "note": "CSS original combinado com os estilos específicos da página"
+    },
+    {
+      "url": "inline-script-original",
+      "local": "site/script.js",
+      "kind": "javascript",
+      "status": 200,
+      "content_type": "text/javascript",
+      "note": "JavaScript local sem chamadas de API"
+    },
+    {
+      "url": "https://linkverificado.bio/afiliadoref3619/images/favicon.ico",
+      "local": "imagens/favicon.ico",
+      "kind": "image",
+      "status": 200,
+      "content_type": "image/x-icon"
+    },
+    {
+      "url": "https://i.postimg.cc/CxnV59gd/pix-logo-png.png",
+      "local": "imagens/pix-logo.png",
+      "kind": "image",
+      "status": 200,
+      "content_type": "image/png"
+    },
+    {
+      "url": "https://i.postimg.cc/P59Wm3R8/pix-logo-png-removebg-preview.png",
+      "local": "imagens/pix-logo-removebg-preview.png",
+      "kind": "image",
+      "status": 200,
+      "content_type": "image/png"
+    }
+  ],
+  "api_calls": [],
+  "dynamic_endpoints_removed": [
+    "consultar-pagamento.php",
+    "gerar-pix.php"
+  ]
+}
