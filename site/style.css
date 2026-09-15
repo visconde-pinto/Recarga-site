@@ -2795,3 +2795,44 @@ body {
         font-size: clamp(14px, 3.8vw, 16px);
     }
 }
+
+/* ===== PIX LUNARPAY ===== */
+.popup-pix .pix-qr-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 170px;
+  margin: 14px auto 16px;
+}
+
+.popup-pix .pix-qr-image {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  border: 8px solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+}
+
+.popup-pix .pix-copy-area {
+  display: block;
+  width: 100%;
+  min-height: 88px;
+  padding: 10px 12px;
+  resize: none;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #374151;
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.popup-pix .pix-status {
+  min-height: 24px;
+  margin: 12px 0 2px;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+}
