@@ -229,14 +229,16 @@
 <button class="btn-close-success" id="btnCloseSuccess">Fechar</button>
 </div>
 </div>
-<!-- ===== POPUP - QR CODE PIX ===== -->
+<!-- ===== POPUP - PAGAMENTO PIX ===== -->
 <div class="popup-overlay popup-pix" id="popupPix">
 <div class="popup-box">
-<div class="pix-title" id="pixTitle">Pague com link</div>
-<div class="pix-code-label" id="pixCodeLabel">Link de pagamento</div>
-<div class="pix-copy-area" id="paymentLinkText">Aguardando link de pagamento...</div>
+<div class="pix-title" id="pixTitle">Pague com Pix</div>
+<div class="pix-qr-wrapper"><img id="pixQrImage" class="pix-qr-image" alt="QR Code Pix" hidden/></div>
+<div class="pix-code-label" id="pixCodeLabel">Pix copia e cola</div>
+<textarea class="pix-copy-area" id="pixCodeText" readonly rows="4" placeholder="Aguardando código Pix..."></textarea>
+<div class="pix-status" id="pixStatus" role="status" aria-live="polite">Aguardando pagamento...</div>
 <div class="pix-actions">
-<button class="btn-copy-pix" id="btnOpenPayment"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5"/></svg> Abrir pagamento</button>
+<button class="btn-copy-pix" id="btnCopyPix">Copiar código Pix</button>
 <button class="btn-close-pix" id="btnClosePix">Fechar pagamento</button>
 </div>
 </div>
