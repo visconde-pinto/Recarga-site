@@ -75,11 +75,14 @@ const supabaseClient = window.supabase?.createClient(
             const popupProcessing = document.getElementById('popupProcessing');
             const popupSuccess = document.getElementById('popupSuccess');
             const popupPix = document.getElementById('popupPix');
-            const paymentLinkText = document.getElementById('paymentLinkText');
+            const pixQrImage = document.getElementById('pixQrImage');
+            const pixCodeText = document.getElementById('pixCodeText');
+            const pixStatus = document.getElementById('pixStatus');
+            const btnCopyPix = document.getElementById('btnCopyPix');
             const pixTitle = document.getElementById('pixTitle');
             const pixCodeLabel = document.getElementById('pixCodeLabel');
-            const btnOpenPayment = document.getElementById('btnOpenPayment');
-            let paymentLinkAtual = '';
+            let orderIdAtual = '';
+            let statusTimer = null;
 
 // ===== Elementos do popup de ordem =====
             const orderUserPopup = document.getElementById('orderUserPopup');
@@ -146,15 +149,21 @@ const supabaseClient = window.supabase?.createClient(
             }
 
             async function consultarPagamentoApi(orderId) {
-                const apiConfig = obterApiConfig();
-                return requisicaoApi(apiConfig.paymentStatusPath.replace('{orderId}', encodeURIComponent(orderId)));
+                if (!supabaseClient) throw new Error('Cliente de pagamento indisponível');
+                const { data, error } = await supabaseClient.functions.invoke('consultar-pedido', {
+                    body: { orderId }
+                });
+                if (error) throw new Error(error.message);
+                return data;
             }
 
             function normalizarPagamentoApi(order) {
                 if (!order) return null;
-                const link = order.checkoutUrl || '';
                 return {
-                    link
+                    orderId: order.orderId || '',
+                    pixCode: order.pixCode || '',
+                    qrImage: order.qrImage || '',
+                    expiresAt: order.expiresAt || ''
                 };
             }
 
@@ -174,11 +183,43 @@ const supabaseClient = window.supabase?.createClient(
             }
 
             function prepararTelaPagamento(paymentApi) {
-                const link = paymentApi?.link || '';
-                paymentLinkAtual = link;
-                animarConteudo(pixTitle, 'Pague com link');
-                animarConteudo(pixCodeLabel, 'Link de pagamento');
-                animarConteudo(paymentLinkText, link);
+                orderIdAtual = paymentApi?.orderId || '';
+                animarConteudo(pixTitle, 'Pague com Pix');
+                animarConteudo(pixCodeLabel, 'Pix copia e cola');
+                if (pixCodeText) pixCodeText.value = paymentApi?.pixCode || '';
+                if (pixQrImage) {
+                    pixQrImage.hidden = !paymentApi?.qrImage;
+                    pixQrImage.src = paymentApi?.qrImage || '';
+                }
+                animarConteudo(pixStatus, 'Aguardando pagamento...');
+            }
+
+            function pararConsultaStatus() {
+                if (statusTimer) clearInterval(statusTimer);
+                statusTimer = null;
+            }
+
+            function iniciarConsultaStatus() {
+                pararConsultaStatus();
+                if (!orderIdAtual) return;
+                let tentativas = 0;
+                statusTimer = setInterval(async () => {
+                    if (++tentativas > 60) return pararConsultaStatus();
+                    try {
+                        const status = await consultarPagamentoApi(orderIdAtual);
+                        if (status?.status === 'paid') {
+                            pararConsultaStatus();
+                            hidePopup(popupPix);
+                            animarConteudo(document.getElementById('successDetail'), 'Pagamento Pix confirmado. Sua recarga foi registrada com sucesso.');
+                            showPopup(popupSuccess);
+                        } else if (status?.status === 'expired' || status?.status === 'cancelled') {
+                            pararConsultaStatus();
+                            animarConteudo(pixStatus, status.status === 'expired' ? 'Este Pix expirou.' : 'Este pagamento foi cancelado.');
+                        }
+                    } catch (error) {
+                        console.warn('Não foi possível consultar o status do Pix.', error);
+                    }
+                }, 10000);
             }
 
 // ===== VERIFICAR USUÁRIO =====
@@ -307,10 +348,23 @@ const supabaseClient = window.supabase?.createClient(
 
 // ===== INTEGRAÇÃO DE PAGAMENTO =====
 
-            btnOpenPayment.addEventListener('click', function() {
-                if (paymentLinkAtual) window.location.href = paymentLinkAtual;
+            btnCopyPix.addEventListener('click', async function() {
+                const code = pixCodeText?.value?.trim();
+                if (!code) return;
+                try {
+                    await navigator.clipboard.writeText(code);
+                    animarConteudo(this, 'Código copiado');
+                    setTimeout(() => animarConteudo(this, 'Copiar código Pix'), 1800);
+                } catch (error) {
+                    pixCodeText.focus();
+                    pixCodeText.select();
+                    document.execCommand('copy');
+                    animarConteudo(this, 'Código copiado');
+                    setTimeout(() => animarConteudo(this, 'Copiar código Pix'), 1800);
+                }
             });
             document.getElementById('btnClosePix').addEventListener('click', function() {
+                pararConsultaStatus();
                 hidePopup(popupPix);
             });
             popupPix.addEventListener('click', function(e) {
@@ -337,7 +391,7 @@ const supabaseClient = window.supabase?.createClient(
                 try {
                     const pedido = await aguardarComTimeout(criarPedidoApi(criarPayloadPedido()), 5000);
                     pagamentoApi = normalizarPagamentoApi(pedido);
-                    if (!pagamentoApi?.link) throw new Error('LINK_INDISPONIVEL');
+                    if (!pagamentoApi?.orderId || !pagamentoApi?.pixCode) throw new Error('PIX_INDISPONIVEL');
                 } catch (error) {
                     hidePopup(popupProcessing);
                     btn.disabled = false;
@@ -351,6 +405,7 @@ const supabaseClient = window.supabase?.createClient(
                     if (pixHabilitado) {
                         prepararTelaPagamento(pagamentoApi);
                         showPopup(popupPix);
+                        iniciarConsultaStatus();
                     } else {
                         showPopup(popupSuccess);
                     }
@@ -362,6 +417,7 @@ const supabaseClient = window.supabase?.createClient(
 
 // ===== FECHAR POPUPS =====
             document.getElementById('btnCloseSuccess').addEventListener('click', function() {
+                pararConsultaStatus();
                 hidePopup(popupSuccess);
                 limparSelecao();
             });
@@ -370,6 +426,7 @@ const supabaseClient = window.supabase?.createClient(
             [popupOrder, popupProcessing, popupSuccess, popupPix].forEach(popup => {
                 popup.addEventListener('click', function(e) {
                     if (e.target === this) {
+                        if (this === popupPix) pararConsultaStatus();
                         hidePopup(this);
                     }
                 });
